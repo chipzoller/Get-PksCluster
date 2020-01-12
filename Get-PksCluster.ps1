@@ -1,7 +1,7 @@
 function Get-PksCluster {
     <#
 .SYNOPSIS
-        This function will get all the provisioned PKS clusters using the CLI tool and return them as PS Objects.
+        This function will get all the provisioned PKS clusters using the CLI tool and return them as PS Objects. Minimum supported version of PKS API server is v1.5.
 .DESCRIPTION
         This function will get the output of `pks clusters` and parse the output.
 .LINK
@@ -20,14 +20,16 @@ function Get-PksCluster {
         if ($Line -match "error") {
             throw "error"
         }
-        if ($Line.Length -ne 0 -and $Line -notmatch "Name\s+Plan") {
+        if ($Line.Length -ne 0 -and $Line -notmatch "PKS\s+Version") {
             $fields = $Line.Trim(' ') -split '\s+'
             $properties = @{
-                Name   = $fields[0]
-                Plan   = $fields[1]
-                UUID   = $fields[2]
-                Status = $fields[3]
-                Action = $fields[4]
+                PKSVersion = $fields[0]
+                Name   = $fields[1]
+                K8sVersion = $fields[2]
+                Plan   = $fields[3]
+                UUID   = $fields[4]
+                Status = $fields[5]
+                Action = $fields[6]
             }
             New-Object -TypeName PSObject -Property $properties
         }
